@@ -4,7 +4,7 @@ services:
   # CFML Engine
   cfml:
     image: ortussolutions/commandbox  
-    # bind public port to 8088
+    # bind public port to 8080
     ports:
       - "8080:8080"
     volumes:
