@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  # CFML Engine
+  cfml:
+    image: ortussolutions/commandbox  
+    # bind public port to 8088
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./www:/app
+      
+  # MySQL Server
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "myp@ssword"
+      
+  # NGINX Container
+  nginx:
+     build: ./build/nginx
+     ports: 
+      - "80:80"
+      - "443:443"
+     # Mount our shared webroot volume
+     volumes: 
+      - ./www:/opt/sites/default
+      - ./build/nginx/config:/etc/nginx

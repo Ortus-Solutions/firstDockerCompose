@@ -1,0 +1,50 @@
+server {
+    ################### SERVER NAME AND PORT #####################
+    server_name _;
+    listen 80;
+	listen 443 ssl http2;        
+    index index.cfm index.htm;
+    root "/opt/sites/default";
+    
+
+    ################### SSL + SECURITY #####################
+    include inc_ssl.conf;
+
+    ################### SECURITY BLOCKING #####################
+    # Block root box.json and server.json
+    location ~* /(box.json|server.json){
+        access_log off; log_not_found off;
+        allow 127.0.0.1;
+        #deny all;
+    }
+
+    # Lucee Admin/Doc blocking
+    location ~* /lucee/(admin|doc){
+        access_log off; log_not_found off;
+        allow 127.0.0.1;
+        #deny      all;    
+        proxy_pass  http://cfml:8080;
+        include inc_lucee-proxy.conf;
+    }
+
+    # Lucee Server Context blocking
+    location ~* /lucee\-server/{
+        access_log off; log_not_found off;
+        allow 127.0.0.1;
+        #deny all;
+        proxy_pass  http://cfml:8080;
+        include inc_lucee-proxy.conf;
+    }
+
+
+    ################### LOCATION: ROOT #####################
+    include inc_locationRewrites.conf;
+
+
+    ################### LUCEE HANDLER #####################
+    location ~ (\.cfm|\.cfml|\.cfc|\.jsp|\.cfr|flex2gateway|messagebroker|flashservices|openamf)(.*)$ {
+        proxy_pass  http://cfml:8080;
+        include     inc_lucee-proxy.conf;
+    }
+}
+
