@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  # CFML Engine
+  cfml:
+    image: ortussolutions/commandbox  
+    # bind public port to 8080
+    ports:
+      - "8080:8080"
